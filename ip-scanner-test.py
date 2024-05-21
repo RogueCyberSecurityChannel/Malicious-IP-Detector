@@ -20,13 +20,31 @@ def netstat(command):
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
         output_lines = result.stdout.splitlines()
-        foreign_ips = [line.split()[2] for line in output_lines if len(line.split()) == 4]
-        for ip in foreign_ips:
-            if ip == "0.0.0.0:0":
-                foreign_ips.remove(ip)
+        raw_ips = [line.split()[2] for line in output_lines if len(line.split()) == 4]
+        foreign_ips = []
+        for ip in raw_ips:
+            if "[" in ip:
+                continue
+            if "0.0.0.0" in ip:
+                continue
+            if '127.0.0.1' in ip:
+                continue
+            if ":" in ip:
+                index = ip.find(":")
+                foreign_ips.append(ip[:index])
+
         return foreign_ips
     except subprocess.CalledProcessError:
         pass
+
+def host_ip_parser(data):
+    ips = []
+    for line, slice in enumerate(data):
+        for index in range(len(slice) - 1):
+            if slice[index:index + 1] == ':':
+                ip = data[line][:index]
+                ips.append(ip)
+        return ips
 
 def find_matches(driver_list_1, driver_list_2):
     set1 = set(driver_list_1)
@@ -38,9 +56,9 @@ def main():
     data = web_scrape_and_process('https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt')
     parsed_list = banned_ip_parser(data)
 
-    foreign_ips = netstat('netstat -an')
-
-    matches = find_matches(parsed_list, foreign_ips)
+    host_ips = netstat('netstat -an')
+    
+    matches = find_matches(parsed_list, host_ips)
 
     match_list = []
     if len(matches):
