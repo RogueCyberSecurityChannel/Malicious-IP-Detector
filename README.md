@@ -10,4 +10,4 @@ git clone
 ```sh
 git clone https://github.com/RogueCyberSecurityChannel/Malicious-IP-Detector
 ```
- - Check out https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt for a full breakdown of their banned IP list and how they maintain it
+ - Check out https://github.com/stamparm/ipsum for a full breakdown of their banned IP list and how they maintain it
