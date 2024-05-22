@@ -51,9 +51,9 @@ def netstat(command):
     except subprocess.CalledProcessError:
         pass
 
-def find_matches(driver_list_1, driver_list_2):
-    set1 = set(driver_list_1)
-    set2 = set(driver_list_2)
+def find_matches(list_1, list_2):
+    set1 = set(list_1)
+    set2 = set(list_2)
     matches = list(set1.intersection(set2))
     return matches
 
