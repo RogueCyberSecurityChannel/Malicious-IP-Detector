@@ -1,6 +1,5 @@
 import subprocess
 import requests
-import pprint
 from requests.exceptions import ConnectionError, RequestException
 import time
 import sys
