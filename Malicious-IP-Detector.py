@@ -23,7 +23,7 @@ def web_scrape_and_process(url):
 
 def banned_ip_parser(data):
     ip_list = data.splitlines()
-    banned_ips =  [line.split() [0] for line in ip_list if line.strip()]
+    banned_ips =  [line.split()[0] for line in ip_list if line.strip()]
     return banned_ips[7:]
 
 def netstat(command):
