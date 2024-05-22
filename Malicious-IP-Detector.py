@@ -51,15 +51,6 @@ def netstat(command):
     except subprocess.CalledProcessError:
         pass
 
-def host_ip_parser(data):
-    ips = []
-    for line, slice in enumerate(data):
-        for index in range(len(slice) - 1):
-            if slice[index:index + 1] == ':':
-                ip = data[line][:index]
-                ips.append(ip)
-        return ips
-
 def find_matches(driver_list_1, driver_list_2):
     set1 = set(driver_list_1)
     set2 = set(driver_list_2)
@@ -98,11 +89,6 @@ def hash_host_malware(command):
         return driver_hash
     except subprocess.CalledProcessError:
         pass
-
-def whois_lookup(ip):
-    obj = IPWhois(ip)
-    result = obj.lookup_rdap(depth=1)
-    return result
 
 def lists_to_dict(keys, values):
     return dict(zip(keys, values))
