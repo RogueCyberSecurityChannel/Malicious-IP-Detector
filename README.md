@@ -6,7 +6,8 @@ Malicious IP Detector
 - Look for matches
 - Output information on active process (PID, filepath, SHA 256 Hash)
 
-. Check out https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt for a full breakdown of their banned IP list and how they maintain it
+
+- Check out https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt for a full breakdown of their banned IP list and how they maintain it
 
 git clone
 ```sh
