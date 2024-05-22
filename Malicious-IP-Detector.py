@@ -112,7 +112,7 @@ def main():
             for match in matches:
                 match_list.append(match)
         else:
-            print("\n [+] No active malicious ip connections detected")
+            print("\n [+] No active malicious IP connections detected")
 
         for match in match_list:
             print(f" \n [!] ACTIVE CONNECTION TO KNOWN MALICIOUS IP DETECTED")
