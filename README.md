@@ -6,8 +6,7 @@ Malicious IP Detector
      / /|_/ // __ `// // // ___// // __ \ / / / // ___/   / / / /_/ /  / / / // _ \ / __// _ \ / ___// __// __ \ / ___/
     / /  / // /_/ // // // /__ / // /_/ // /_/ /(__  )  _/ / / ____/  / /_/ //  __// /_ /  __// /__ / /_ / /_/ // /
    /_/  /_/ \__,_//_//_/ \___//_/ \____/ \__,_//____/  /___//_/      /_____/ \___/ \__/ \___/ \___/ \__/ \____//_/
-  -------------------------------------------------------------------------------------------------------------------
-                             {GitHub:https://github.com/RogueCyberSecurityChannel}</pre>
+                                {GitHub:https://github.com/RogueCyberSecurityChannel} </pre>
 
 
 - Web scrape https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt for  an updated list of known malicious IP's (updated daily)
