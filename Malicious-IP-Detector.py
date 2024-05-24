@@ -3,9 +3,10 @@ import requests
 from requests.exceptions import ConnectionError, RequestException
 import time
 import sys
+from datetime import datetime
 
 def welcome():
-    print('''
+    print(r'''
        __  ___        __ _        _                        ____ ____     ____         __               __
       /  |/  /____ _ / /(_)_____ (_)____   __  __ _____   /  _// __ \   / __ \ ___   / /_ ___   _____ / /_ ____   _____
      / /|_/ // __ `// // // ___// // __ \ / / / // ___/   / / / /_/ /  / / / // _ \ / __// _ \ / ___// __// __ \ / ___/
@@ -57,6 +58,11 @@ def find_matches(list_1, list_2):
     matches = list(set1.intersection(set2))
     return matches
 
+def get_timestamp():
+    current_datetime = datetime.now()
+    timestamp_string = current_datetime.strftime(" [*] %I:%M:%S %p\n [*] %B %d, %Y")
+    return timestamp_string
+
 def pid_info_printer(command):
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
@@ -93,52 +99,63 @@ def hash_host_malware(command):
 def lists_to_dict(keys, values):
     return dict(zip(keys, values))
 
+
 def main():
+    welcome()
     try:
-        welcome()
         time.sleep(1)
         data = web_scrape_and_process('https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt')
         parsed_ip_list = banned_ip_parser(data)
-
-        output = netstat('netstat -ano')
-        host_ips = output[0]
-        host_pids = output[1]
-
-        ip_pid_dictionary = lists_to_dict(host_ips, host_pids)
-
-        matches = find_matches(parsed_ip_list, host_ips)
-        match_list = []
-        if len(matches):
-            for match in matches:
-                match_list.append(match)
-        else:
-            print("\n [+] No active malicious IP connections detected")
-
-        for match in match_list:
-            print(f" \n [!] ACTIVE CONNECTION TO KNOWN MALICIOUS IP DETECTED")
-            time.sleep(2)
-            print(f' [-] IP: {match} PID: {ip_pid_dictionary[match]}')
-            time.sleep(2)
-            print(' [*] Process information: ')
-            time.sleep(2)
-            pid_info = pid_info_printer(f'tasklist /FI "PID eq {ip_pid_dictionary[match]}" /V')
-            for line in pid_info:
-                print('   ' + line)
-            path_info = path_finder(f'wmic process where ProcessId={ip_pid_dictionary[match]} get ExecutablePath')
-            for path in path_info:
-                print('\n   Filepath: ' + path)
-                detection_hash = hash_host_malware(f'certutil -hashfile "{path}" SHA256')
-                print("   SHA256 Hash: " + detection_hash)
-
     except (ConnectionError, RequestException) as e:
         time.sleep(1)
         print(f' [-] An error occurred while trying to establish a secure connection. Please check your internet connection and try again later.\n')
         sys.exit(1)
     except KeyboardInterrupt:
-        sys.exit(0)
+                sys.exit(0)
     except Exception as e:
-        print(str(e))
-        sys.exit(1)
+                print(str(e))
+                sys.exit(1)
+    while True:
+            try:
+                output = netstat('netstat -ano')
+                host_ips = output[0]
+                host_pids = output[1]
+
+                ip_pid_dictionary = lists_to_dict(host_ips, host_pids)
+
+
+                matches = find_matches(parsed_ip_list, host_ips)
+                match_list = []
+                if len(matches):
+                    for match in matches:
+                        match_list.append(match)
+                else:
+                    print("\n [+] No active malicious IP connections detected")
+
+                for match in match_list:
+                    print(f" \n [!] ACTIVE CONNECTION TO KNOWN MALICIOUS IP DETECTED")
+                    time.sleep(2)
+                    timestamp = get_timestamp()
+                    print(timestamp)
+                    time.sleep(2)
+                    print(f' [-] IP: {match} PID: {ip_pid_dictionary[match]}')
+                    time.sleep(2)
+                    print(' [*] Process information: ')
+                    time.sleep(2)
+                    pid_info = pid_info_printer(f'tasklist /FI "PID eq {ip_pid_dictionary[match]}" /V')
+                    for line in pid_info:
+                        print('   ' + line)
+                    path_info = path_finder(f'wmic process where ProcessId={ip_pid_dictionary[match]} get ExecutablePath')
+                    for path in path_info:
+                        print('\n   Filepath: ' + path)
+                        detection_hash = hash_host_malware(f'certutil -hashfile "{path}" SHA256')
+                        print("   SHA256 Hash: " + detection_hash)
+                time.sleep(30)
+            except KeyboardInterrupt:
+                sys.exit(0)
+            except Exception as e:
+                print(str(e))
+                sys.exit(1)
 
 if __name__ == "__main__":
     main()
