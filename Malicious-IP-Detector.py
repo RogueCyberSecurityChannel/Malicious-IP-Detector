@@ -13,7 +13,7 @@ def welcome():
     / /  / // /_/ // // // /__ / // /_/ // /_/ /(__  )  _/ / / ____/  / /_/ //  __// /_ /  __// /__ / /_ / /_/ // /
    /_/  /_/ \__,_//_//_/ \___//_/ \____/ \__,_//____/  /___//_/      /_____/ \___/ \__/ \___/ \___/ \__/ \____//_/
   -------------------------------------------------------------------------------------------------------------------
-                             {GitHub:https://github.com/RogueCyberSecurityChannel}''')
+                                 {GitHub:https://github.com/RogueCyberSecurityChannel}''')
 
 def web_scrape_and_process(url):
     response = requests.get(url)
