@@ -29,7 +29,6 @@ def header(date, time):
 ********************************************************"""
     return header_file
 
-
 def running_animation():
     animation = "|/-\\"
     i = 0
