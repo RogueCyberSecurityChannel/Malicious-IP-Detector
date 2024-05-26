@@ -53,7 +53,7 @@ def log_message_generator(match, raw_pid_info, path, hash):
         f'\nIP: {match}'
         f'\nFilepath: {path}'
         f'\nSHA256 Hash: {hash}'
-        f'\nProcess information: {pid}\n'
+        f'\nProcess information: {pid}\n\n'
     )
     log_to_file(log_message)
 
