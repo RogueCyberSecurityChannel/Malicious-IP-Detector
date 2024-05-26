@@ -50,7 +50,7 @@ def log_message_generator(match, raw_pid_info, path, hash):
     log_message = (
         f'Date: {date}'
         f'\nTime: {time}'
-        f'\nIP: {match}'
+        f'\nIP: {match}\n'
         f'\nFilepath: {path}'
         f'\nSHA256 Hash: {hash}'
         f'\nProcess information: {pid}\n\n'
