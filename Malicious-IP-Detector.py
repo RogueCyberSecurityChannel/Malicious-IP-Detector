@@ -115,7 +115,7 @@ def pid_info_printer(command):
         return output_lines
     except subprocess.CalledProcessError as e:
         print(f" [-] Error executing PID information command: {e}")
-        sys.exit(1)
+        pass
 
 def path_finder(command):
     try:
@@ -130,7 +130,7 @@ def path_finder(command):
         return paths
     except subprocess.CalledProcessError as e:
         print(f" [-] Error executing PID information command: {e}")
-        sys.exit(1)
+        pass
 
 def hash_host_malware(command):
     try:
