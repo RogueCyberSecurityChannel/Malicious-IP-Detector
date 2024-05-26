@@ -1,8 +1,10 @@
 import subprocess
+import threading
 import requests
 from requests.exceptions import ConnectionError, RequestException
 import time
 import sys
+import ctypes
 from datetime import datetime
 
 def welcome():
@@ -14,6 +16,50 @@ def welcome():
    /_/  /_/ \__,_//_//_/ \___//_/ \____/ \__,_//____/  /___//_/      /_____/ \___/ \__/ \___/ \___/ \__/ \____//_/
   -------------------------------------------------------------------------------------------------------------------
                                  {GitHub:https://github.com/RogueCyberSecurityChannel}''')
+
+def header(date, time):
+    header_file = f"""
+********************************************************
+              Malicious-Ip-Detector Log
+  [GitHub:https://github.com/RogueCyberSecurityChannel]
+
+  Date: {date}
+  Time: {time}
+
+********************************************************"""
+    return header_file
+
+
+def running_animation():
+    animation = "|/-\\"
+    i = 0
+    while True:
+        sys.stdout.write( "\r" + f" ["  + animation[i % len(animation)] + "] ")
+        sys.stdout.flush()
+        i += 1
+        time.sleep(1)
+
+def log_to_file(message):
+    with open('Malicious-IP_Detector_log.csv', 'a') as fd:
+        fd.write(f'{message}\r\n')
+
+def log_message_generator(match, raw_pid_info, path, hash):
+    pid = "\n".join(line for line in raw_pid_info)
+    current_datetime = datetime.now()
+    time = current_datetime.strftime("%I:%M:%S %p")
+    date = current_datetime.strftime('%B %d, %Y')
+    log_message = (
+        f'Date: {date}'
+        f'\nTime: {time}'
+        f'\nIP: {match}'
+        f'\nFilepath: {path}'
+        f'\nSHA256 Hash: {hash}'
+        f'\nProcess information: {pid}\n'
+    )
+    log_to_file(log_message)
+
+def pop_up(message):
+    ctypes.windll.user32.MessageBoxW(0, message, "Malicious-IP-Detector Alert", 16)
 
 def web_scrape_and_process(url):
     response = requests.get(url)
@@ -60,7 +106,7 @@ def find_matches(list_1, list_2):
 
 def get_timestamp():
     current_datetime = datetime.now()
-    timestamp_string = current_datetime.strftime(" [*] %I:%M:%S %p\n [*] %B %d, %Y")
+    timestamp_string = current_datetime.strftime(" [*] %B %d, %Y\n [*] %I:%M:%S %p")
     return timestamp_string
 
 def pid_info_printer(command):
@@ -102,6 +148,12 @@ def lists_to_dict(keys, values):
 
 def main():
     welcome()
+
+    current_datetime = datetime.now()
+    time_for_header = current_datetime.strftime("%I:%M:%S %p")
+    date = current_datetime.strftime('%B %d, %Y')
+    log_header = header(date, time_for_header)
+    log_to_file(log_header)
     try:
         time.sleep(1)
         data = web_scrape_and_process('https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt')
@@ -130,26 +182,32 @@ def main():
                     for match in matches:
                         match_list.append(match)
                 else:
-                    print("\n [+] No active malicious IP connections detected")
+                    global flag
+                    if flag == False:
+                        print("\n [+] No active malicious IP connections detected")
+                        animation_thread = threading.Thread(target=running_animation, daemon=True)
+                        animation_thread.start()
+                        flag = True
 
                 for match in match_list:
+                    pop_up_thread = threading.Thread(target=pop_up,args=(f"[+] Connection to know malicious IP detected!\n[+] IP: {match} ",))
+                    pop_up_thread.start()
                     print(f" \n [!] ACTIVE CONNECTION TO KNOWN MALICIOUS IP DETECTED")
-                    time.sleep(2)
                     timestamp = get_timestamp()
                     print(timestamp)
-                    time.sleep(2)
                     print(f' [-] IP: {match} PID: {ip_pid_dictionary[match]}')
-                    time.sleep(2)
+                    print(f' [+] Event logged to "Malicious-IP_Detector_log.csv"')
                     print(' [*] Process information: ')
-                    time.sleep(2)
                     pid_info = pid_info_printer(f'tasklist /FI "PID eq {ip_pid_dictionary[match]}" /V')
                     for line in pid_info:
-                        print('   ' + line)
+                        print('    ' + line)
                     path_info = path_finder(f'wmic process where ProcessId={ip_pid_dictionary[match]} get ExecutablePath')
                     for path in path_info:
-                        print('\n   Filepath: ' + path)
+                        print('\n    Filepath: ' + path)
                         detection_hash = hash_host_malware(f'certutil -hashfile "{path}" SHA256')
-                        print("   SHA256 Hash: " + detection_hash)
+                        print("    SHA256 Hash: " + detection_hash + '\n')
+                    log_message_generator(match, pid_info, path, detection_hash)
+                    pop_up_thread.join()
                 time.sleep(30)
             except KeyboardInterrupt:
                 sys.exit(0)
@@ -158,4 +216,5 @@ def main():
                 sys.exit(1)
 
 if __name__ == "__main__":
+    flag = False
     main()
