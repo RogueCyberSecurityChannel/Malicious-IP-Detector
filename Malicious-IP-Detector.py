@@ -15,7 +15,7 @@ def welcome():
     / /  / // /_/ // // // /__ / // /_/ // /_/ /(__  )  _/ / / ____/  / /_/ //  __// /_ /  __// /__ / /_ / /_/ // /
    /_/  /_/ \__,_//_//_/ \___//_/ \____/ \__,_//____/  /___//_/      /_____/ \___/ \__/ \___/ \___/ \__/ \____//_/
   -------------------------------------------------------------------------------------------------------------------
-                                {GitHub:https://github.com/RogueCyberSecurityChannel}''')
+                                 {GitHub:https://github.com/RogueCyberSecurityChannel}''')
 
 def header(date, time):
     header_file = f"""
@@ -129,7 +129,7 @@ def path_finder(command):
                     paths.append(path)
         return paths
     except subprocess.CalledProcessError as e:
-        print(f" [-] Error executing PID information command: {e}")
+        print(f" [-] Could not find filepath: {e}")
         pass
 
 def hash_host_malware(command):
@@ -160,6 +160,7 @@ def main():
     except (ConnectionError, RequestException) as e:
         time.sleep(1)
         print(f' [-] An error occurred while trying to establish a secure connection. Please check your internet connection and try again later.\n')
+        time.sleep(30)
         sys.exit(1)
     except KeyboardInterrupt:
                 sys.exit(0)
@@ -212,7 +213,6 @@ def main():
                 sys.exit(0)
             except Exception as e:
                 print(str(e))
-                sys.exit(1)
 
 if __name__ == "__main__":
     flag = False
